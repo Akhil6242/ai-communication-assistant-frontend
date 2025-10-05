@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { getEmails, sendReply } from './services/api';
 import AnalyticsDashboard from './components/AnalyticsDashboard';
 import './App.css';
+import { generateAIResponse, checkAIHealth } from './services/api';
+
 
 function App() {
   const [emails, setEmails] = useState([]);
@@ -13,6 +15,10 @@ function App() {
   const [lastFetch, setLastFetch] = useState(null);
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [showAboutModal, setShowAboutModal] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiServiceStatus, setAiServiceStatus] = useState('checking');
+
+  
   // Fetch emails on component mount
   useEffect(() => {
     const fetchEmails = async () => {
@@ -57,36 +63,37 @@ function App() {
     }
   };
 
-  const handleGenerateAIResponse = async (emailId) => {
+  useEffect(() => {
+    checkAIHealth()
+      .then(data => setAiServiceStatus(data.status === 'healthy' ? 'healthy' : 'down'))
+      .catch(() => setAiServiceStatus('down'));
+  }, []);
+
+
+  const handleGenerateAIResponse = async (email) => {
+    setAiLoading(true);
     try {
-      console.log('🤖 Generating AI response for email ID:', emailId);
+      const response = await generateAIResponse(email.content, email.category?.toLowerCase() || 'general');
       
-      const response = await fetch(`http://localhost:8080/api/emails/${emailId}/analyze`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
+      // Update the email with AI response
+      setEmails(prevEmails => 
+        prevEmails.map(e => 
+          e.id === email.id 
+            ? { ...e, aiResponse: response.generated_response }
+            : e
+        )
+      );
       
-      if (response.ok) {
-        const updatedEmail = await response.json();
-        
-        setEmails(emails.map(email => 
-          email.id === emailId ? updatedEmail : email
-        ));
-        
-        setSelectedEmail(updatedEmail);
-        setEditedResponse(updatedEmail.aiResponse || '');
-        
-        console.log('✅ AI response generated successfully');
-      } else {
-        throw new Error('Failed to generate AI response');
+      // Update selected email if it's the current one
+      if (selectedEmail && selectedEmail.id === email.id) {
+        setSelectedEmail(prev => ({ ...prev, aiResponse: response.generated_response }));
       }
     } catch (error) {
-      console.error('❌ Error generating AI response:', error);
-      alert('❌ Failed to generate AI response. Make sure AI service is running.');
+      console.error('Failed to generate AI response:', error);
     }
+    setAiLoading(false);
   };
+
 
   const handleRegenerateAI = async () => {
     if (!selectedEmail) return;
@@ -394,6 +401,9 @@ function App() {
               <div className="email-detail">
                 <div className="email-header">
                   <h3>📧 {selectedEmail.subject}</h3>
+                  <div className={`ai-status ${aiServiceStatus}`}>
+                    🤖 AI Service: {aiServiceStatus === 'healthy' ? '✅ Online' : '❌ Offline'}
+                  </div>
                   <div className="email-badges">
                     <span className={`badge priority-${selectedEmail.priority?.toLowerCase() || 'normal'}`}>
                       {selectedEmail.priority || 'Normal'} Priority
@@ -458,10 +468,11 @@ function App() {
                     <div className="no-ai-response">
                       <p>No AI response generated yet for this email.</p>
                       <button 
-                        onClick={() => handleGenerateAIResponse(selectedEmail.id)}
-                        className="generate-ai-btn"
+                        onClick={() => handleGenerateAIResponse(selectedEmail)}
+                        disabled={aiLoading || aiServiceStatus !== 'healthy'}
+                        className="ai-generate-btn"
                       >
-                        🤖 Generate AI Response
+                        {aiLoading ? '🤖 Generating...' : '✨ Generate AI Response'}
                       </button>
                     </div>
                   )}
