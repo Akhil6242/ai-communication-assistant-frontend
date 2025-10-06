@@ -3,6 +3,7 @@ import { getEmails, sendReply } from './services/api';
 import AnalyticsDashboard from './components/AnalyticsDashboard';
 import './App.css';
 import { generateAIResponse, checkAIHealth } from './services/api';
+import { getEmails, getEmailById, sendReply, generateAIResponse, checkAIHealth, getMockEmails } from './services/api';
 
 
 function App() {
@@ -22,15 +23,20 @@ function App() {
   // Fetch emails on component mount
   useEffect(() => {
     const fetchEmails = async () => {
+      setIsFetching(true);
       try {
         const response = await getEmails();
-        setEmails(response.data);
-        setLoading(false);
-        console.log('✅ Emails loaded:', response.data.length);
+        setEmails(response.data || []);
+        setLastFetch(new Date().toLocaleString());
+        console.log('✅ Emails loaded from backend:', response.data);
       } catch (error) {
-        console.error('❌ Failed to fetch emails:', error);
-        setLoading(false);
+        console.warn('⚠️ Backend unavailable, using mock data');
+        // Use mock data as fallback
+        const mockData = getMockEmails();
+        setEmails(mockData.data);
+        setLastFetch(new Date().toLocaleString() + ' (Mock Data)');
       }
+      setIsFetching(false);
     };
 
     fetchEmails();
@@ -94,11 +100,14 @@ function App() {
       if (selectedEmail && selectedEmail.id === email.id) {
         setSelectedEmail(prev => ({ ...prev, aiResponse: response.generated_response }));
       }
+      
+      console.log('✅ AI response generated for email:', email.id);
     } catch (error) {
-      console.error('Failed to generate AI response:', error);
+      console.error('❌ Failed to generate AI response:', error);
     }
     setAiLoading(false);
   };
+
 
 
   const handleRegenerateAI = async () => {
