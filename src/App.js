@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { getEmails, sendReply } from './services/api';
+import { getEmails,getEmailById, sendReply } from './services/api';
 import AnalyticsDashboard from './components/AnalyticsDashboard';
 import './App.css';
 import { generateAIResponse, checkAIHealth } from './services/api';
-import { getEmails, getEmailById, sendReply, generateAIResponse, checkAIHealth, getMockEmails } from './services/api';
 
 
 function App() {
@@ -23,18 +22,19 @@ function App() {
   // Fetch emails on component mount
   useEffect(() => {
     const fetchEmails = async () => {
+      console.log('🚀 Starting email fetch...');
       setIsFetching(true);
       try {
+        console.log('🔄 About to call getEmails()...');
         const response = await getEmails();
+        console.log('📧 Raw API response:', response);
+        console.log('📧 Email data:', response.data);
+        
         setEmails(response.data || []);
         setLastFetch(new Date().toLocaleString());
-        console.log('✅ Emails loaded from backend:', response.data);
       } catch (error) {
-        console.warn('⚠️ Backend unavailable, using mock data');
-        // Use mock data as fallback
-        const mockData = getMockEmails();
-        setEmails(mockData.data);
-        setLastFetch(new Date().toLocaleString() + ' (Mock Data)');
+        console.error('💥 Fetch failed:', error);
+        // Add fallback logic here if needed
       }
       setIsFetching(false);
     };
@@ -100,14 +100,11 @@ function App() {
       if (selectedEmail && selectedEmail.id === email.id) {
         setSelectedEmail(prev => ({ ...prev, aiResponse: response.generated_response }));
       }
-      
-      console.log('✅ AI response generated for email:', email.id);
     } catch (error) {
-      console.error('❌ Failed to generate AI response:', error);
+      console.error('Failed to generate AI response:', error);
     }
     setAiLoading(false);
   };
-
 
 
   const handleRegenerateAI = async () => {
