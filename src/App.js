@@ -35,8 +35,11 @@ function App() {
       } catch (error) {
         console.error('💥 Fetch failed:', error);
         // Add fallback logic here if needed
-      }
+        setEmails([]);
+      } finally{
       setIsFetching(false);
+      console.log('🏁 Loading state set to false');
+      }
     };
 
     fetchEmails();
