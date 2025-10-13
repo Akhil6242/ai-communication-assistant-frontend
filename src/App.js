@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getEmails, getEmailById, sendReply, generateAIResponse, checkAIHealth } from './services/api';
+import { getEmails,fetchNewEmails, getEmailById, sendReply, generateAIResponse, checkAIHealth } from './services/api';
 import './App.css';
 
 function App() {
@@ -143,21 +143,41 @@ function App() {
     }
   };
 
+  const refreshEmails = async () => {
+    console.log('🚀 Starting email fetch...');
+    setIsFetching(true);
+    try {
+      console.log('🔄 About to call getEmails()...');
+      const response = await getEmails();
+      console.log('📧 Raw API response:', response);
+      console.log('📧 Email data:', response.data);
+      
+      setEmails(response.data || []);
+      setLastFetch(new Date().toLocaleString());
+      console.log('✅ State updated with emails:', response.data?.length || 0);
+    } catch (error) {
+      console.error('💥 Fetch failed:', error);
+      setEmails([]);
+    } finally {
+      setIsFetching(false);
+      console.log('🏁 Loading state set to false');
+    }
+  };
+
   const handleFetchEmails = async () => {
     try {
       setIsFetching(true);
-      console.log('📧 Fetching new emails...');
-      
-      const response = await getEmails();
-      setEmails(response.data || []);
-      setLastFetch(new Date().toLocaleTimeString());
-      
-      showSuccessNotification('Emails refreshed successfully!');
-    } catch (error) {
-      console.error('❌ Error fetching emails:', error);
-      alert('Error fetching emails: ' + error.message);
+      const { data } = await fetchNewEmails();          // uses prod URL
+      if (data.status === "success") {
+        // wait while server imports, then refresh list
+        setTimeout(refreshEmails, 2000);
+        showSuccessNotification(`${data.newEmailsCount} new emails imported!`);
+      }
+    } catch (e) {
+      alert(`Error fetching emails – ${e.message}`);
+    } finally {
+      setIsFetching(false);
     }
-    setIsFetching(false);
   };
 
   const showSuccessNotification = (message) => {

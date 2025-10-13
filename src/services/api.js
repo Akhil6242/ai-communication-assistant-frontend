@@ -21,6 +21,19 @@ export const getEmails = async () => {
   }
 };
 
+
+export const fetchNewEmails = async () => {
+  try {
+    console.log('🔄 Triggering new email fetch...');
+    const response = await axios.post(`${BACKEND_URL}/emails/fetch-emails`);
+    console.log('✅ Fetch new emails response:', response.data);
+    return response;
+  } catch (error) {
+    console.error('❌ Error triggering new email fetch:', error.response || error.message);
+    throw error;
+  }
+};
+
 export const getEmailById = async (id) => {
   try {
     console.log('🔍 Fetching email by ID:', id);
