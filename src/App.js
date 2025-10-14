@@ -85,20 +85,27 @@ function App() {
     setAiLoading(true);
     try {
       const response = await generateAIResponse(email.body, email.category?.toLowerCase() || 'general');
+      console.log('🎯 Full AI response:', response);  // Debug log
+
+      const aiResponseText = response.aiResponse || response.generated_response;
       
+      if (!aiResponseText) {
+        throw new Error('No AI response received from service');
+      }
+
       // Update the email with AI response
       setEmails(prevEmails => 
         prevEmails.map(e => 
           e.id === email.id 
-            ? { ...e, aiResponse: response.generated_response }
+            ? { ...e, aiResponse: aiResponseText }
             : e
         )
       );
       
       // Update selected email if it's the current one
       if (selectedEmail && selectedEmail.id === email.id) {
-        setSelectedEmail(prev => ({ ...prev, aiResponse: response.generated_response }));
-        setEditedResponse(response.generated_response);
+        setSelectedEmail(prev => ({ ...prev, aiResponse: aiResponseText }));
+        setEditedResponse(aiResponseText);
       }
       
       console.log('✅ AI response generated for email:', email.id);

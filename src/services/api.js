@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Production URLs for your deployed services
 const BACKEND_URL = 'https://ai-email-assistant8n.uc.r.appspot.com/api';
-const AI_SERVICE_URL = 'https://ai-email-assistant8n-on8a7zv92.vercel.app/api';
+const AI_SERVICE_URL = 'https://ai-email-assistant8n.vercel.app/api';
 
 // Configure axios defaults
 axios.defaults.timeout = 30000; // 30 second timeout
