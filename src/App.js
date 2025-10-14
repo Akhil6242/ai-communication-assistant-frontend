@@ -224,9 +224,21 @@ function App() {
           </div>
           <div className="modal-content">
             <div className="profile-section">
-              <div className="avatar">👨‍💻</div>
-              <h3>Full-Stack Developer & AI Enthusiast</h3>
-              <p className="title">Masters in Computer Applications | Delhi NCR, India</p>
+              <div className="profile-photo">
+                <img 
+                  src="https://avatars.githubusercontent.com/u/181719775?s=400&u=021d888025a489910b0cb86571d24c029fe2bba3&v=4" 
+                  alt="Akhilesh Yadav" 
+                  className="developer-photo"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+                <div className="avatar-fallback" style={{display: 'none'}}>👨‍💻</div>
+              </div>
+              <h3>Akhilesh Yadav</h3>
+              <p className="title">Full-Stack Developer & AI Enthusiast</p>
+              <p className="subtitle">Masters in Computer Applications | Delhi NCR, India</p>
             </div>
 
             <div className="bio-section">
@@ -251,7 +263,7 @@ function App() {
                 </div>
                 <div className="skill-category">
                   <h5>AI/ML</h5>
-                  <span className="skills">Python Flask, Natural Language Processing, Sentiment Analysis</span>
+                  <span className="skills">Node.js, Natural Language Processing, Sentiment Analysis</span>
                 </div>
                 <div className="skill-category">
                   <h5>Database & Cloud</h5>
@@ -267,8 +279,8 @@ function App() {
                   🔗 GitHub
                 </a>
                 <a href="https://linkedin.com/in/akhilesh-yadav-0b83032a5" target="_blank" rel="noopener noreferrer">
-                    💼 LinkedIn
-                  </a>
+                    🤝 LinkedIn
+                </a>
                 <a href="mailto:akhilyadavbil@gmail.com">
                   📧  akhilyadavbil@gmail.com
                 </a>
