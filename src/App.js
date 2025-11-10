@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getEmails,fetchNewEmails, getEmailById, sendReply, generateAIResponse, checkAIHealth } from './services/api';
+import { getEmails,fetchNewEmails, sendReply, generateAIResponse, checkAIHealth } from './services/api';
 import './App.css';
 
 function App() {

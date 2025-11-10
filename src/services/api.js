@@ -88,19 +88,6 @@ export const checkAIHealth = async () => {
   }
 };
 
-// Test backend connection
-export const testBackendConnection = async () => {
-  try {
-    console.log('🔍 Testing backend connection...');
-    const response = await axios.get(`${BACKEND_URL}/emails`);
-    console.log('✅ Backend connection successful!');
-    return true;
-  } catch (error) {
-    console.error('❌ Backend connection failed:', error);
-    return false;
-  }
-};
-
 // Create mock data if backend is unavailable
 export const getMockEmails = () => {
   console.log('📝 Using mock data since backend is unavailable');
