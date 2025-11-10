@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Production URLs for your deployed services
-const BACKEND_URL = 'https://ai-email-assistant8n.uc.r.appspot.com/api';
+const BACKEND_URL = 'https://ai-email-assistant-backend-emjs.onrender.com';
 const AI_SERVICE_URL = 'https://ai-email-assistant8n.vercel.app/api';
 
 // Configure axios defaults
@@ -11,8 +11,8 @@ axios.defaults.headers.common['Content-Type'] = 'application/json';
 // Backend API functions
 export const getEmails = async () => {
   try {
-    console.log('🔍 Fetching emails from:', `${BACKEND_URL}/emails`);
-    const response = await axios.get(`${BACKEND_URL}/emails`);
+    console.log('🔍 Fetching emails from:', `${BACKEND_URL}/api/emails`);
+    const response = await axios.get(`${BACKEND_URL}/api/emails`);
     console.log('✅ Emails fetched successfully:', response.data);
     return response;
   } catch (error) {
@@ -25,7 +25,7 @@ export const getEmails = async () => {
 export const fetchNewEmails = async () => {
   try {
     console.log('🔄 Triggering new email fetch...');
-    const response = await axios.post(`${BACKEND_URL}/emails/fetch-emails`);
+    const response = await axios.post(`${BACKEND_URL}/api/emails/fetch-emails`);
     console.log('✅ Fetch new emails response:', response.data);
     return response;
   } catch (error) {
@@ -37,7 +37,7 @@ export const fetchNewEmails = async () => {
 export const getEmailById = async (id) => {
   try {
     console.log('🔍 Fetching email by ID:', id);
-    const response = await axios.get(`${BACKEND_URL}/emails/${id}`);
+    const response = await axios.get(`${BACKEND_URL}/api/emails/${id}`);
     console.log('✅ Email fetched successfully:', response.data);
     return response;
   } catch (error) {
@@ -49,7 +49,7 @@ export const getEmailById = async (id) => {
 export const sendReply = async (id, replyText) => {
   try {
     console.log('🔍 Sending reply for email:', id);
-    const response = await axios.post(`${BACKEND_URL}/emails/${id}/reply`, { 
+    const response = await axios.post(`${BACKEND_URL}/api/emails/${id}/reply`, { 
       reply: replyText 
     });
     console.log('✅ Reply sent successfully:', response.data);
@@ -92,7 +92,7 @@ export const checkAIHealth = async () => {
 export const testBackendConnection = async () => {
   try {
     console.log('🔍 Testing backend connection...');
-    const response = await axios.get(`${BACKEND_URL}/emails`);
+    const response = await axios.get(`${BACKEND_URL}/api/emails`);
     console.log('✅ Backend connection successful!');
     return true;
   } catch (error) {
