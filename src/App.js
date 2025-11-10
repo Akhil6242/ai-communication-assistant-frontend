@@ -267,7 +267,7 @@ function App() {
                 </div>
                 <div className="skill-category">
                   <h5>Database & Cloud</h5>
-                  <span className="skills">PostgreSQL, Render Database and Backend Server, Google Cloud, Git, GitHub</span>
+                  <span className="skills">PostgreSQL, SQLite, Google Cloud, Git, GitHub</span>
                 </div>
               </div>
             </div>
