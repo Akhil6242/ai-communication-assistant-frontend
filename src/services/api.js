@@ -37,7 +37,7 @@ export const fetchNewEmails = async () => {
 export const getEmailById = async (id) => {
   try {
     console.log('🔍 Fetching email by ID:', id);
-    const response = await axios.get(`${BACKEND_URL}/api/emails/${id}`);
+    const response = await axios.get(`${BACKEND_URL}/emails/${id}`);
     console.log('✅ Email fetched successfully:', response.data);
     return response;
   } catch (error) {
